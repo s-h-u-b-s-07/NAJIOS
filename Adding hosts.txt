@@ -1,0 +1,58 @@
+Launch EC2 instance: as a slave
+
+
+1 sudo apt-get update
+2 sudo apt-get upgrade
+3 sudo apt-get install nagios-nrpe-server nagios-plugins
+4 sudo nano /etc/nagios/nrpe.cfg
+
+    (add server address for master)
+
+5 sudo /etc/init.d/nagios-nrpe-server restart
+
+----------------------------------------------------------------------------------
+GO TO MASTER :
+
+
+1  cd /usr/local/nagios/etc/objects/
+2  ls
+3  sudo nano localhost.cfg
+
+   copy the define host
+
+4  sudo nano host1.cfg
+
+   define host {
+
+    use                     linux-server            ; Name of host template to use
+                                                    ; This host definition will inherit all var>
+                                                    ; in (or inherited by) the linux-server hos>
+    host_name               slave1
+    alias                   nagios-nrpe
+    address                 35.175.116.36
+}
+
+
+5  cd ..
+6  ls
+7  sudo nano nagios.cfg
+
+   cfg_file=/usr/local/nagios/etc/objects/host1.cfg
+
+8  cd objects/
+9  ls
+10  sudo systemctl restart nagios
+
+---------------------------------------------------------------------------
+GO TO SLAVE:
+
+for cheaking realtime senario go to slave and stop nrpe
+
+1  sudo /etc/init.d/nagios-nrpe-server stop
+
+
+
+
+
+
+

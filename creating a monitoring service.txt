@@ -1,0 +1,63 @@
+ON SLAVE:
+
+install ngnix service
+ 
+1 sudo apt install nginx
+
+
+
+ON MASTER:
+
+
+
+1  cd /usr/local/nagios/etc/objects/
+2  ls
+3  sudo nano localhost.cfg       ---->(COPY SERVICE TEMPLATE)
+4  sudo nano host1.cfg
+
+	define service {
+
+    	use                     generic-service           ; Name of service template >
+    	host_name               slave1
+   	service_description     Check Nginx
+    	check_command           check_http
+	}
+
+5  sudo systemctl restart nagios
+
+
+AFTER OK STATUS
+
+GO TO SLAVE AND 
+
+sudo systemctl stop ngnix
+
+-----------------------------------------------------------------------------
+
+
+CREATING OWN COMMAND
+1    cd /usr/local/nagios/etc/objects/
+2    sudo nano commands.cfg    -----add own command
+
+define command {
+
+    command_name    test_http
+    command_line    $USER1$/check_http -I $HOSTADDRESS$ $ARG1$
+}
+
+3    sudo nano host1.cfg
+
+define service {
+
+    use                     generic-service           ; Name of service templat>
+    host_name               slave1
+    service_description     Check test
+    check_command           test_http
+    check_interval                  1                       ; Check the service every >
+    retry_interval                  1                       ; Re-check the service eve>
+
+}
+
+
+4  sudo nano templates.cfg   ----(just to see check interval and retry interval)
+5  sudo systemctl restart nagios

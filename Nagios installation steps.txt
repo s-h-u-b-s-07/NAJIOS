@@ -1,0 +1,46 @@
+1  sudo apt install -y autoconf bc gawk dc build-essential gcc libc6 make wget unzip apache2 php libapache2-mod-php libgd-dev libmcrypt-dev make libssl-dev snmp libnet-snmp-perl gettext
+2  sudo adduser nagios
+3  sudo groupadd nagcmd
+4  sudo usermod -a -G nagcmd nagios
+5  wget https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.4.6.tar.gz
+6  tar -xf nagios-4.4.6.tar.gz
+7  cd nagioscore-nagios-4.4.6/
+8  ./configure --with-nagios-group=nagios --with-command-group=nagcmd
+9  make -j4 all
+10  sudo make install
+11  sudo make install-commandmode
+12  sudo make install-init
+13  sudo make install-config
+14  sudo /usr/bin/install -c -m 644 sample-config/httpd.conf /etc/apache2/sites-available/nagios.conf
+15  sudo usermod -a -G nagios www-data
+16  wget https://nagios-plugins.org/download/nagios-plugins-2.2.1.tar.gz
+17  tar xpf nagios-plugins-*.tar.gz
+18  cd nagios-plugins-2.2.1/
+19  ./configure --with-nagios-user=nagios --with-nagios-group=nagcmd --with-openssl
+20  make -j4
+21  sudo make install
+22  sudo a2enmod rewrite
+23  sudo a2enmod cgi
+24  sudo htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+25  sudo ln -s /etc/apache2/sites-available/nagios.conf /etc/apache2/sites-enabled/
+26  sudo systemctl restart apache2
+27  sudo nano /etc/systemd/system/nagios.service
+
+---------------------------------------------------copy and paste this code---------------------------------
+
+[unit]
+Description=Nagios
+Bindto=network.target
+
+[Install]
+Wantedby=multi-user.target
+
+[Service]
+Type=simple
+User=nagios
+Group=nagcmd
+ExecStart=/usr/local/nagios/bin/nagios /usr/local/nagios/etc/nagios.cfg
+
+-----------------------------------------------------------------------------------------------------------------------
+
+28  sudo systemctl start nagios
