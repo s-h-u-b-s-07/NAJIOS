@@ -44,3 +44,6 @@ ExecStart=/usr/local/nagios/bin/nagios /usr/local/nagios/etc/nagios.cfg
 -----------------------------------------------------------------------------------------------------------------------
 
 28  sudo systemctl start nagios
+
+
+OPEN TERMINAL WITH PUBLIC IP AND /nagios
