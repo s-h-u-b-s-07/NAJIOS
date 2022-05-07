@@ -1,3 +1,5 @@
+sudo apt-get update
+sudo apt-get upgrade
 1  sudo apt install -y autoconf bc gawk dc build-essential gcc libc6 make wget unzip apache2 php libapache2-mod-php libgd-dev libmcrypt-dev make libssl-dev snmp libnet-snmp-perl gettext
 2  sudo adduser nagios
 3  sudo groupadd nagcmd
